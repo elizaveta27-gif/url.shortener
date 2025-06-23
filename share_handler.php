@@ -13,12 +13,13 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true)
 try {
     $cartLink = Option::get('url.shortener', 'link_basket');
     $notFoundLink = Option::get('url.shortener', 'link_404');
-    if (!class_exists(Option::get('url.shortener', 'classBasket')))
-    {
-        $proccessor = (new \Url\Shortener\Service\StandardBasketProcessor);
-    } else {
+    $classOption = Option::get('url.shortener', 'classBasket');
+    if($classOption && class_exists($classOption)) {
         $proccessor = new (Option::get('url.shortener', 'classBasket'));
+    } else {
+        $proccessor = (new \Url\Shortener\Service\StandardBasketProcessor);
     }
+
     if ((new \Url\Shortener\Service\ShortLinkProcessorService($proccessor))->process()) {
         LocalRedirect($cartLink);
     }
